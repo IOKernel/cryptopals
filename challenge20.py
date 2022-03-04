@@ -21,8 +21,10 @@ def get_score(message: bytes) -> int:
 # ------------------------- main -------------------------
 # --------------------------------------------------------
 def main():
+    # Note: it sometimes takes the wrong first byte, lowercase letters instead 
+    # of upper case. Resulting in an error only in the ' character. 
     # given info
-    plaintexts = [b64decode(pt) for pt in read('20.txt').split()]
+    plaintexts = [b64decode(pt) for pt in read('challenge20-text.txt').split()]
     key = random_bytes_gen(BLOCKSIZE)
     nonce = bytes(BLOCKSIZE//2)
     # operations

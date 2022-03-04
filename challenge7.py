@@ -25,7 +25,7 @@ def main():
     key = b"YELLOW SUBMARINE"
     # opening the file and reading the ciphertext
     dirname = os.path.dirname(__file__)
-    path = os.path.join(dirname, '7.txt')
+    path = os.path.join(dirname, 'challenge7-text.txt')
     with open(path) as f:
         ciphertext = b64decode(f.read())
     plaintext = aes_ecb_decrypt(ciphertext, key)

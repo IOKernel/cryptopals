@@ -28,7 +28,7 @@ def detect_ecb(ciphertext: bytes, block_size: int = 16) -> bool:
 # AES-128-ECB
 def main():
     # opening the file and reading the ciphertext
-    ciphertexts = read('8.txt')
+    ciphertexts = read('challenge8-text.txt')
     for count, ciphertext in enumerate(ciphertexts.split()):
         #! each ciphertext is 10 blocks of 16 bytess
         ciphertext = bytes.fromhex(ciphertext)

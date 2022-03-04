@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import time
-from challenge21 import Random
-from utils import ans_check
+from utils import ans_check, Random
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
 # --------------------------------------------------------

@@ -37,7 +37,7 @@ def main():
     # set IV of 16 \x00
     iv = bytes(BLOCKSIZE)
     # ciphertext from file, b64 decoded
-    ciphertext = b64decode(read('10.txt'))
+    ciphertext = b64decode(read('challenge10-text.txt'))
     key = b"YELLOW SUBMARINE"
     pt = aes_cbc_decrypt(ciphertext, key, iv)
     plaintext_string = pkcs7_unpad(pt)

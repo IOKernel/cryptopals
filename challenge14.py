@@ -18,7 +18,7 @@ KEY = random_bytes_gen(BLOCKSIZE)
 # --------------------------------------------------------
 
 def ecb_encryption_oracle(plaintext: bytes, key: bytes = KEY) -> bytes:
-    append_text = b64decode(read('12.txt'))
+    append_text = b64decode(read('challenge12-text.txt'))
     plaintext = plaintext + append_text
     padded = pkcs7_pad(plaintext)
     ciphertext = aes_ecb_encrypt(padded, key)

@@ -59,7 +59,7 @@ class Random():
 
 
     def random(self):
-        return self._extract_number()# / (2**self.w)
+        return self._extract_number()# / (2**self.w) # to output numbers {0,1}
         
 
 

@@ -39,7 +39,7 @@ def known_byte(line: int, pt: str, ciphertexts: list, keystream: bytes) -> bytes
 # --------------------------------------------------------
 def main():
     # given info
-    plaintexts = [b64decode(pt) for pt in read('19.txt').split()]
+    plaintexts = [b64decode(pt) for pt in read('challenge19-text.txt').split()]
     key = random_bytes_gen(BLOCKSIZE)
     nonce = bytes(BLOCKSIZE//2)
     # operations

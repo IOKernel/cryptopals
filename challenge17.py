@@ -90,15 +90,7 @@ def cbc_padding_oracle_atk(ct: bytes, iv: bytes):
 # ------------------------- main -------------------------
 # --------------------------------------------------------
 def main():
-    """plaintexts = read('17.txt').split()
-    ct, IV = random_encrypt(plaintexts)
-    print(f'Padding: {validate_padding(ct, IV)}')
-    plaintext = cbc_padding_oracle_atk(ct, IV)
-    plaintext = pkcs7_unpad(plaintext)
-    print(f'{plaintext = }')
-    print(plaintext.decode() in plaintexts)  """
-
-    plaintexts = read('17.txt').split()
+    plaintexts = read('challenge17-text.txt').split()
     for index, plaintext in enumerate(plaintexts):
         print(f'decryption of plaintext #{index+1}: ', end='')
         ct = aes_cbc_encrypt(pkcs7_pad(plaintext.encode()), KEY, IV)

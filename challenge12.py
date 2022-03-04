@@ -15,7 +15,7 @@ KEY = random_bytes_gen(BLOCKSIZE)
 # --------------------------------------------------------
 
 def ecb_encryption_oracle(plaintext: bytes, key: bytes = KEY) -> bytes:
-    append_text = b64decode(read('12.txt'))
+    append_text = b64decode(read('challenge12-text.txt'))
     plaintext = pkcs7_pad(plaintext + append_text)
     ciphertext = aes_ecb_encrypt(plaintext, key)
     return ciphertext
@@ -37,7 +37,7 @@ def ecb_check():
 
 def find_character(plaintext: bytes, initial_block: bytes, secret: bytes, block: int, blocksize: int) -> bytes:
     # for 1337 effect
-    #random_shiz = read('12.txt')
+    #random_shiz = read('challenge12-text.txt')
     for c in printable:
         ciphertext = encrypt(plaintext + secret + c.encode())
         current_block = ciphertext[block*blocksize:block*blocksize+blocksize]

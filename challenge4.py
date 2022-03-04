@@ -32,7 +32,7 @@ def main():
     highestscore = 0
     # open the provided file
     dirname = os.path.dirname(__file__)
-    path = os.path.join(dirname, '4.txt')
+    path = os.path.join(dirname, 'challenge4-text.txt')
     with open(path) as f:
         for line in f:
             # strip the lines from the newline character \n

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-from challenge21 import Random
-from utils import ans_check
+from utils import ans_check, Random
 
 # --------------------------------------------------------
 # ---------------------- constants -----------------------
