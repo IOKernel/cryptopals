@@ -38,6 +38,7 @@ def main():
     ciphertext = aes_ctr_encrypt(plaintext, KEY, NONCE)
     recovered_pt = recover_ctr_plaintext(ciphertext)
     print(recovered_pt)
+    
 if __name__ == "__main__":
     main()
 

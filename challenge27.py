@@ -37,6 +37,9 @@ def main():
     input_text = "_admin_true"
     ciphertext = cbc_encryption_oracle(input_text.encode())
     cipher_blocks = get_blocks(ciphertext)
+    # AES-CBC(P_1, P_2, P_3) -> C_1, C_2, C_3
+    # Modified msg: C_1, C_2, C_3 -> C_1, 0, C_1
+    # get key: P'_1 XOR P'_3
     cipher_blocks[1] = bytes(16)
     cipher_blocks[2] = cipher_blocks[0]
     ciphertext = b''.join(cipher_blocks)
