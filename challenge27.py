@@ -22,7 +22,7 @@ def cbc_encryption_oracle(plaintext: bytes, key: bytes = KEY) -> bytes:
     ciphertext = aes_cbc_encrypt(padded, key, IV)
     return ciphertext
 
-def admin_check(ciphertext: bytes, key: bytes = KEY) -> bool:
+def receiver_decrypt(ciphertext: bytes, key: bytes = KEY) -> bool:
     plaintext = aes_cbc_decrypt(ciphertext, key, IV)
     plain_blocks = get_blocks(plaintext)
     pt_vals = [c for c in plaintext]
@@ -41,7 +41,7 @@ def main():
     cipher_blocks[2] = cipher_blocks[0]
     ciphertext = b''.join(cipher_blocks)
     try:
-        admin_check(ciphertext)
+        receiver_decrypt(ciphertext)
     except ValueError as err:
         recovered_iv = xor(err.args[1][0], err.args[1][2])
     
