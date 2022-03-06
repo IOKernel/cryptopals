@@ -90,8 +90,8 @@ def aes_ctr_encrypt(plaintext: bytes, key: bytes, nonce: bytes) -> bytes:
     keystream_length = len(pt_blocks)
     keystream = get_keystream(key, nonce, keystream_length)
     ciphertext = []
-    for block, cipher_block in enumerate(pt_blocks):
-        ct = xor(cipher_block, keystream[block])
+    for block, pt_block in enumerate(pt_blocks):
+        ct = xor(pt_block, keystream[block])
         ciphertext.append(ct)
     return b''.join(ciphertext)
 
