@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-from utils import Random, xor
+from utils import Random, xor, ans_check
 from os import urandom
 from random import randint
-# --------------------------------------------------------
-# ---------------------- constants -----------------------
-# --------------------------------------------------------
-
+import time
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
 # --------------------------------------------------------
@@ -21,7 +18,6 @@ def get_keystream(seed: int, length: int) -> list:
         byte = bitstring_to_bytes(rand_number)
         keystream += byte
     return keystream
-    
 
 def encrypt(plaintext: bytes, seed: int) -> bytes:
     length = len(plaintext)
@@ -36,23 +32,50 @@ def bruteforce_seed(keystream_known, length, seed_size = 16):
             print('FOUND')
             return seed
 
+def gen_reset_token() -> int:
+    seed = int(time.time())
+    rand = Random(seed)
+    return rand.random()
+
+def mt19937_time_seeded(rand_number: int) -> bool:
+    cur_time = int(time.time())
+    for i in range(10000):
+        seed = cur_time - i
+        rand = Random(seed)
+        if rand_number == rand.random():
+            return True
+    return False
 # --------------------------------------------------------
 # ------------------------- main -------------------------
 # --------------------------------------------------------
 def main():
     # setting the seed
-    # first part of the encryption/decryption test
+    # Part 1: encryption/decryption test
     seed = 0xDEAD
+    plaintext = b"Hello world!"
+    ciphertext = encrypt(plaintext, seed)
+    plaintext_decrypt = encrypt(ciphertext, seed)
+    print('Encrypt/Decrypt: ', end='')
+    ans_check(plaintext, plaintext_decrypt)
+
+    # Part 2: recovering the seed
     prefix = urandom(randint(1,10))
     plaintext = b'A'*14
     ciphertext = encrypt(prefix + plaintext, seed)
-    # recovering the seed
     keystream_known = xor(ciphertext[-14:], plaintext)
     recovered_seed = bruteforce_seed(keystream_known, len(plaintext+prefix))
+    print('Seed recovery: ', end='')
+    ans_check(seed, recovered_seed)
     print(f"{recovered_seed = }\nIn hex = {hex(recovered_seed)}")
-    # generate password reset token
+
+    # Part 3: generate password reset token
+    token = gen_reset_token()
+    time_seeded = mt19937_time_seeded(token)
+    print('Token time seeded: ', end='')
+    ans_check(True, time_seeded)
+    print(f'{token = }')
     # check if password token is encrypted with MT19937
-    # psuedo-code
+    print(f'Token seeded with time? {time_seeded}')
 
 if __name__ == "__main__":
     main()
