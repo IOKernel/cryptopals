@@ -55,7 +55,7 @@ def main():
     # adding some colors for better readibility
     print('\033[96m=\033[0m'*128)
     pt = 'A'*128
-    ciphertext, key, iv = encryption_oracle(pt)
+    ciphertext, _, _ = encryption_oracle(pt)
     print(f'\033[34mciphertext\033[0m: {ciphertext}')
     print(f'\033[34mECB MODE\033[0m? {detect_ecb(ciphertext)}')
     print('\033[96m=\033[0m'*128)

@@ -35,7 +35,7 @@ def ecb_check() -> bool:
 
 def get_blocksize() -> tuple:
     sizes = []
-    for i in range(32):
+    for _ in range(32):
         sizes.append(len(encrypt(b'A')))
     return max(sizes) - min(sizes), max(sizes)
 
