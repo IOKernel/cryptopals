@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-
+from utils import ans_check
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
 # --------------------------------------------------------
 def str_to_binary(msg):
     # converts the string to binary and output a base10 integer
-    return int(''.join([format(ord(c), 'b') for c in msg]),2)
+    return ''.join([format(ord(c), 'b').rjust(8,'0') for c in msg])
 
 def sha1(message: str) -> bytes:
     def _break_chunks(data: int, chunk_size: int) -> list:
@@ -25,31 +25,18 @@ def sha1(message: str) -> bytes:
     h4 = 0xC3D2E1F0
     ml = bin(len(message) * 8)[2:].rjust(64, '0')
     wrap_32 = 2**32
-    
     ## pre-processing:
-    if message:
-        bin_msg = str_to_binary(message)
-    else:
-        bin_msg = 0
+    bin_msg = str_to_binary(message)
     # append 1
-    klen = 448 - ((len(message)*8)-1)%512
-    bin_msg = bin_msg << 1 | 1
-    bin_len = len(bin(bin_msg)[2:])
-    # make len of bin_msg = 448 (mod 512) by appending 0s
-    # if bin_len % 512 > 448:
-    #     bin_msg = bin_msg << (512-(bin_len%512 - 448))
-    # else:
-    #     bin_msg = bin_msg << (448 - (len(bin(bin_msg)[2:])%512))
-    # append ml as 64 bit big-endian
-    bin_msg = bin(bin_msg)[2:] + ('0'*klen) + ml
+    klen = 448 - ((len(message)*8)+1)%512
+    bin_msg = bin_msg + '1' + '0'*klen + ml
     ## process message in 512-bit chunks
     chunks_512 = _break_chunks(bin_msg, 512)
     for chunk in chunks_512:
         w = [0]*80
         w[0:16] = _break_chunks(chunk, 32)
         for i in range(16,80):
-            w[i] = _left_rotate((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1)
-        print(w)
+            w[i] = _left_rotate((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1) % wrap_32
         # Initialize hash value for this chunk: 
         a = h0 
         b = h1 
@@ -82,16 +69,20 @@ def sha1(message: str) -> bytes:
         h3 = (h3 + d) % wrap_32
         h4 = (h4 + e) % wrap_32
     # Produce the final hash value (big-endian) as a 160-bit number:
-    
     hh = h0<<128 | h1<<96 | h2<<64 | h3<<32 | h4
-    return hex(hh)
+    return hex(hh)[2:]
 # --------------------------------------------------------
 # ------------------------- main -------------------------
 # --------------------------------------------------------
 
 def main():
-    digest = sha1('The quick brown fox jumps over the lazy dog')
-    print(digest[2:])
-    print('2fd4e1c67a2d28fced849ee1bb76e7391b93eb12')
+    ans_check(sha1('The quick brown fox jumps over the lazy dog'), '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12')
+    ans_check(sha1('The quick brown fox jumps over the lazy cog'), 'de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3')
+    ans_check(sha1(''), 'da39a3ee5e6b4b0d3255bfef95601890afd80709')
+    
+    key = 'ahdasjhd'
+    print(sha1(key+'hello'))
+    print(sha1('ahdasjhc'+'hello'))
+
 if __name__ == "__main__":
     main()
