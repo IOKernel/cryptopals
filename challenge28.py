@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 from utils import ans_check
+import hashing
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
 # --------------------------------------------------------
-def str_to_binary(msg):
-    # converts the string to binary and output a base10 integer
-    return ''.join([format(ord(c), 'b').rjust(8,'0') for c in msg])
-
 def sha1(message: str) -> bytes:
     def _break_chunks(data: int, chunk_size: int) -> list:
         if type(data) is int:
@@ -16,7 +13,9 @@ def sha1(message: str) -> bytes:
     def _left_rotate(data: int, rot_val: int):
         # rotates bit vals
         return ((data << rot_val)|(data >> (32 - rot_val))) % wrap_32
-
+    def _str_to_binary(msg):
+        # converts the string to binary and output a base10 integer
+        return ''.join([format(ord(c), 'b').rjust(8,'0') for c in msg])
     # initializing constants:
     h0 = 0x67452301
     h1 = 0xEFCDAB89
@@ -26,7 +25,7 @@ def sha1(message: str) -> bytes:
     ml = bin(len(message) * 8)[2:].rjust(64, '0')
     wrap_32 = 2**32
     ## pre-processing:
-    bin_msg = str_to_binary(message)
+    bin_msg = _str_to_binary(message)
     # append 1
     klen = 448 - ((len(message)*8)+1)%512
     bin_msg = bin_msg + '1' + '0'*klen + ml
@@ -76,13 +75,13 @@ def sha1(message: str) -> bytes:
 # --------------------------------------------------------
 
 def main():
-    ans_check(sha1('The quick brown fox jumps over the lazy dog'), '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12')
-    ans_check(sha1('The quick brown fox jumps over the lazy cog'), 'de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3')
-    ans_check(sha1(''), 'da39a3ee5e6b4b0d3255bfef95601890afd80709')
+    ans_check(hashing.sha1('The quick brown fox jumps over the lazy dog'), '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12')
+    ans_check(hashing.sha1('The quick brown fox jumps over the lazy cog'), 'de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3')
+    ans_check(hashing.sha1(''), 'da39a3ee5e6b4b0d3255bfef95601890afd80709')
     
     key = 'ahdasjhd'
-    print(sha1(key+'hello'))
-    print(sha1('ahdasjhc'+'hello'))
+    print(hashing.sha1(key+'hello'))
+    print(hashing.sha1('ahdasjhc'+'hello'))
 
 if __name__ == "__main__":
     main()
