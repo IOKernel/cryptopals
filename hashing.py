@@ -1,4 +1,4 @@
-def sha1(message: str, h_vals: list = [], ml='') -> bytes:
+def sha1(message: bytes, h_vals: list = [], padding = '') -> bytes:
     def _break_chunks(data: int, chunk_size: int) -> list:
         if type(data) is int:
             data = bin(data)[2:].rjust(512, '0')
@@ -7,9 +7,15 @@ def sha1(message: str, h_vals: list = [], ml='') -> bytes:
     def _left_rotate(data: int, rot_val: int):
         # rotates bit vals
         return ((data << rot_val)|(data >> (32 - rot_val))) % wrap_32
-    def _str_to_binary(msg):
-        # converts the string to binary and output a base10 integer
-        return ''.join([format(ord(c), 'b').rjust(8,'0') for c in msg])
+
+    def _bytes_to_binary(msg):
+        # converts the string to binary str
+        if msg:
+            to_int = int.from_bytes(msg, 'big')
+            return bin(to_int)[2:].rjust(len(msg)*8,'0')
+        else:
+            return ''
+
     # initializing constants:
     if h_vals:
         h0, h1, h2, h3, h4 = h_vals
@@ -19,19 +25,23 @@ def sha1(message: str, h_vals: list = [], ml='') -> bytes:
         h2 = 0x98BADCFE
         h3 = 0x10325476
         h4 = 0xC3D2E1F0
-    if not ml:
-        ml = bin(len(message) * 8)[2:].rjust(64, '0')
+    ml = bin(len(message) * 8)[2:].rjust(64, '0')
     wrap_32 = 2**32
+    if type(message) is str:
+        message = message.encode()
+
     ## pre-processing:
-    bin_msg = _str_to_binary(message)
-    # append 1
+    bin_msg = _bytes_to_binary(message)
     klen = 448 - ((len(message)*8)+1)%512
-    padding = '1' + '0'*klen + ml
+    # padding can be provided for length extension attacks
+    # forged padding of key + og_str + padding_bytes + new_str
+    if not padding:
+        padding = '1' + '0'*klen + ml
     bin_msg = bin_msg + padding
-    print(len(bin_msg))
     ## process message in 512-bit chunks
     chunks_512 = _break_chunks(bin_msg, 512)
     for chunk in chunks_512:
+        print(f'{bin(chunk)[2:] = }')
         w = [0]*80
         w[0:16] = _break_chunks(chunk, 32)
         for i in range(16,80):
@@ -67,7 +77,7 @@ def sha1(message: str, h_vals: list = [], ml='') -> bytes:
         h2 = (h2 + c) % wrap_32
         h3 = (h3 + d) % wrap_32
         h4 = (h4 + e) % wrap_32
-        print(h0,h1,h2,h3,h4)
-    # Produce the final hash value (big-endian) as a 160-bit number:
+
+    # digests the final hash value (big-endian) as a 160-bit number:
     hh = h0<<128 | h1<<96 | h2<<64 | h3<<32 | h4
     return hex(hh)[2:]
