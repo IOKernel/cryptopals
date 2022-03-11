@@ -15,7 +15,6 @@ def sha1(message: bytes, h_vals: list = [], padding = '') -> bytes:
             return bin(to_int)[2:].rjust(len(msg)*8,'0')
         else:
             return ''
-
     # initializing constants:
     if h_vals:
         h0, h1, h2, h3, h4 = h_vals
@@ -41,7 +40,6 @@ def sha1(message: bytes, h_vals: list = [], padding = '') -> bytes:
     ## process message in 512-bit chunks
     chunks_512 = _break_chunks(bin_msg, 512)
     for chunk in chunks_512:
-        print(f'{bin(chunk)[2:] = }')
         w = [0]*80
         w[0:16] = _break_chunks(chunk, 32)
         for i in range(16,80):
@@ -77,7 +75,7 @@ def sha1(message: bytes, h_vals: list = [], padding = '') -> bytes:
         h2 = (h2 + c) % wrap_32
         h3 = (h3 + d) % wrap_32
         h4 = (h4 + e) % wrap_32
-
+    print(f'h values = {h0, h1, h2, h3, h4}')
     # digests the final hash value (big-endian) as a 160-bit number:
     hh = h0<<128 | h1<<96 | h2<<64 | h3<<32 | h4
     return hex(hh)[2:]

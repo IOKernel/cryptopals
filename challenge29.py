@@ -30,17 +30,16 @@ def bitstring_to_bytes(s):
 
 def main():
     # init
-    key = b"mango"
+    key = b"MANGO"
     og_str = b"comment1=cooking%20MCs;userdata=foo;comment2=%20like%20a%20pound%20of%20bacon"
     new_str = b";admin=true"
     max_keylen_guess = 12
 
     # get original hash with MAC
     print('Original sha----------------')
-    og_sha = bin(int(sha1(key+og_str), 16))[2:]
+    og_sha = bin(int(sha1(key+og_str), 16))[2:].rjust(160,'0')
     og_chunks = break_chunks(og_sha, 32)
-
-    for i in range(5, 6):
+    for i in range(1, max_keylen_guess):
         print(f"KEY LENGTH = {i}-----------------------")
         # get og_padding + len in bytes format
         padding = md_padding(i, og_str)
@@ -57,5 +56,6 @@ def main():
         print(f"{new_sha=     }")
         if ans_check(new_sha, correct_sha):
             break
+        
 if __name__ == "__main__":
     main()
