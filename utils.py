@@ -23,8 +23,10 @@ def ans_check(answer, result) -> str:
     # compare if results match
     if (result == answer):
         print('\033[32m'+"Passed\033[0m")
+        return True
     else:
         print('\033[91m'+"FAILED\033[0m")
+        return False
 
 def read(filename: str) -> str:
     '''opening the file and reading the ciphertext'''
@@ -42,6 +44,22 @@ def block_bit_flip(block: bytes, guess: int, flip_pos: int, new_byte: int) -> by
     flipped_byte = bytes([block[flip_pos] ^ guess ^ new_byte])
     return block[:flip_pos] + flipped_byte + block[flip_pos+1:]
 
+def bitstring_to_bytes(s: str) -> bytes:
+    # takes binary string and converts it to bytes
+    v = int(s, 2)
+    b = bytearray()
+    while v:
+        b.append(v & 0xff)
+        v >>= 8
+    return bytes(b[::-1])
+
+def _bytes_to_binary(msg: bytes) -> str:
+        # converts the bytes to binary str
+        if msg:
+            to_int = int.from_bytes(msg, 'big')
+            return bin(to_int)[2:].rjust(len(msg)*8,'0')
+        else:
+            return ''
 class Random():
     def __init__(self, input_seed = 0, MT = False):
         # initializing values
