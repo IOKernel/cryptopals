@@ -6,7 +6,7 @@ import os
 # ---------------------- functions -----------------------
 # --------------------------------------------------------
 BLOCKSIZE = 16
-def xor(a: bytes, b: bytes) -> bytes:
+def xor(a: bytes, b: bytes, repeat = True) -> bytes:
     '''
         to get the key to roll over, the module operator
         is used over the length of the key, 
@@ -14,8 +14,16 @@ def xor(a: bytes, b: bytes) -> bytes:
         ex: 0%3 = 0, 1%3 = 1, 2%3 = 2, 3%3 = 0, etc..
     '''
     xored = []
-    for char_pos, c in enumerate(a):
-        xored.append(c ^ b[char_pos%len(b)])
+    if repeat:
+        for char_pos, c in enumerate(a):
+            xored.append(c ^ b[char_pos%len(b)])
+    else:
+        if len(a)<len(b):
+            b, a = a, b
+            for char_pos in range(len(b)):
+                xored.append(a[char_pos] ^ b[char_pos])
+            for char_pos in range(len(b), len(a)):
+                xored.append(a[char_pos])
     return bytes(xored)
 
 

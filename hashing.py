@@ -75,7 +75,6 @@ def sha1(message: bytes, h_vals: list = [], padding = '') -> bytes:
         h2 = (h2 + c) % wrap_32
         h3 = (h3 + d) % wrap_32
         h4 = (h4 + e) % wrap_32
-    print(f'h values = {h0, h1, h2, h3, h4}')
     # digests the final hash value (big-endian) as a 160-bit number:
     hh = h0<<128 | h1<<96 | h2<<64 | h3<<32 | h4
     return hex(hh)[2:]
