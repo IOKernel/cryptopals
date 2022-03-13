@@ -58,7 +58,7 @@ class MyServer(BaseHTTPRequestHandler):
         for byte_index in range(len(sig_a)):
             if sig_a[byte_index] != sig_b[byte_index]:
                 return False
-            time.sleep(0.01)
+            time.sleep(0.05)
         return True
 
 
