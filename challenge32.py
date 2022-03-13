@@ -25,7 +25,7 @@ def attack(URL, filename, tolerance = 0.01):
             r = requests.get(url = URL, params=PARAMS)
             end_time = time.time()
             execution_time = end_time - start_time
-            if counter > len(hexdigits)*5:
+            if counter > len(hexdigits)*3:
                 signature = signature[:-1]
                 counter = 0
                 last_time = execution_time - tolerance
@@ -49,7 +49,7 @@ def attack(URL, filename, tolerance = 0.01):
 def main():
     URL = 'http://localhost:8888/test'
     filename = "flag.txt"
-    attack(URL, filename, tolerance = 0.002)
+    attack(URL, filename, tolerance = 0.0025)
 
 if __name__ == "__main__":
     main()
