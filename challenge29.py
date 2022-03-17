@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from hashing import sha1
-from hashing_old import sha1 as sha1old
 from utils import ans_check
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
@@ -40,18 +39,22 @@ def main():
     print('Original sha----------------')
     og_sha = bin(int(sha1(key+og_str).hexdigest(), 16))[2:].rjust(160,'0')
     og_chunks = break_chunks(og_sha, 32)
+
     for i in range(1, max_keylen_guess):
         print(f"KEY LENGTH = {i}-----------------------")
         # get og_padding + len in bytes format
         padding = md_padding(i, og_str)
         padding_bytes = bitstring_to_bytes(padding)
+        
         # correct sha if we use original key
         # has to be key + og_str + padding + length + new_str
         forged_padding = md_padding(i, og_str+padding_bytes+new_str)
         new_sha = sha1(new_str, og_chunks, padding=forged_padding).hexdigest()
         correct_sha = sha1(key+og_str+padding_bytes+new_str).hexdigest()
+
         print(f"{correct_sha= }")
         print(f"{new_sha=     }")
+
         if ans_check(new_sha, correct_sha):
             break
         
