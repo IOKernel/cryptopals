@@ -68,6 +68,19 @@ def _bytes_to_binary(msg: bytes) -> str:
             return bin(to_int)[2:].rjust(len(msg)*8,'0')
         else:
             return ''
+            
+def power_mod(b, e, m):
+    " from rosettacode "
+    x = 1
+    while e > 0:
+        b, e, x = (
+            b * b % m,
+            e // 2,
+            b * x % m if e % 2 else x
+        )
+ 
+    return x
+
 class Random():
     def __init__(self, input_seed = 0, MT = False):
         # initializing values
