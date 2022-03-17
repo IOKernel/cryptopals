@@ -1,3 +1,4 @@
+import struct
 class sha1():
     def __init__(self, msg: bytes, h_vals: list = [], padding = ''):
         if type(msg) is str:
@@ -50,6 +51,10 @@ class sha1():
     def hexdigest(self):
         return hex(self.H)[2:]
 
+    def bytes(self):
+        # could use bitstring_to_bytes from chal28
+        return self.H.to_bytes((self.H.bit_length() + 7) // 8, 'big') or b'\0'
+
     ## process message in 512-bit chunks
     def _process(self):
         chunks_512 = self._break_chunks(self.message, 512)
@@ -91,7 +96,6 @@ class sha1():
 
 # MD4 implementation from
 # https://github.com/kangtastic/
-import struct
 
 class MD4:
     """An implementation of the MD4 hash algorithm."""
