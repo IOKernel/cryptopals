@@ -75,13 +75,12 @@ def sha1(message: str) -> bytes:
 # --------------------------------------------------------
 
 def main():
-    ans_check(hashing.sha1('The quick brown fox jumps over the lazy dog'), '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12')
-    ans_check(hashing.sha1('The quick brown fox jumps over the lazy cog'), 'de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3')
-    ans_check(hashing.sha1(''), 'da39a3ee5e6b4b0d3255bfef95601890afd80709')
-    
-    key = 'ahdasjhd'
-    print(hashing.sha1(key+'hello'))
-    print(hashing.sha1('ahdasjhc'+'hello'))
+    ans_check(hashing.sha1(b'The quick brown fox jumps over the lazy dog').hexdigest(), '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12')
+    ans_check(hashing.sha1(b'The quick brown fox jumps over the lazy cog').hexdigest(), 'de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3')
+    ans_check(hashing.sha1(b'').hexdigest(), 'da39a3ee5e6b4b0d3255bfef95601890afd80709')
+    key = b'ahdasjhd'
+    print(hashing.sha1(key+b'hello').hexdigest())
+    print(hashing.sha1(b'ahdasjhc'+b'hello').hexdigest())
 
 if __name__ == "__main__":
     main()

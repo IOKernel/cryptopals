@@ -15,12 +15,12 @@ def hmac(key: bytes, message: bytes, hash, blockSize: int, outputsize: int) -> s
     block_sized_key = computeBlockSizedKey(key, hash, blockSize, outputsize)
     o_key_pad = xor(block_sized_key, b'\x5c' * blockSize)   # Outer padded key
     i_key_pad = xor(block_sized_key, b'\x36' * blockSize)   # Inner padded key
-    return hash(o_key_pad + in_bytes(hash(i_key_pad + message), outputsize))
+    return hash(o_key_pad + in_bytes(hash(i_key_pad + message).hexdigest(), outputsize)).hexdigest()
 
 def computeBlockSizedKey(key, hash, blockSize, outputsize):
     # Keys longer than blockSize are shortened by hashing them
     if (len(key) > blockSize):
-        key = in_bytes(hash(key), outputsize)
+        key = in_bytes(hash(key).hexdigest(), outputsize)
 
     # Keys shorter than blockSize are padded to blockSize by padding with zeros on the right
     if (len(key) < blockSize):

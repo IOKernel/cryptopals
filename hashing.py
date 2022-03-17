@@ -1,83 +1,93 @@
-def sha1(message: bytes, h_vals: list = [], padding = '') -> bytes:
-    def _break_chunks(data: int, chunk_size: int) -> list:
+class sha1():
+    def __init__(self, msg: bytes, h_vals: list = [], padding = ''):
+        if type(msg) is str:
+            self.message = msg.encode()
+        self.message = msg
+        self.h = h_vals.copy()
+        self.padding = padding
+        if not self.h:
+            self.h = [
+                0x67452301,
+                0xEFCDAB89,
+                0x98BADCFE,
+                0x10325476,
+                0xC3D2E1F0
+                ]
+        
+        # initializing constants:
+        self.ml = bin(len(self.message) * 8)[2:].rjust(64, '0')
+        #self.ml = len(self.message) * 8
+        self.wrap_32 = 2**32
+        self.H = 0
+        ## pre-processing:
+        klen = 448 - ((len(self.message)*8)+1)%512
+        self._bytes_to_binary()
+        # padding can be provided for length extension attacks
+        # forged padding of key + og_str + padding_bytes + new_str
+        if not self.padding:
+            self.padding = '1' + '0'*klen + self.ml
+        self.message += self.padding
+        self._process()
+
+
+    def _break_chunks(self, data: int, chunk_size: int) -> list:
         if type(data) is int:
             data = bin(data)[2:].rjust(512, '0')
         return [int(data[i:i+chunk_size],2) for i in range(0, len(data), chunk_size)]
 
-    def _left_rotate(data: int, rot_val: int):
+    def _left_rotate(self, data: int, rot_val: int):
         # rotates bit vals
-        return ((data << rot_val)|(data >> (32 - rot_val))) % wrap_32
+        return ((data << rot_val)|(data >> (32 - rot_val))) % self.wrap_32
 
-    def _bytes_to_binary(msg):
+    def _bytes_to_binary(self):
         # converts the string to binary str
-        if msg:
-            to_int = int.from_bytes(msg, 'big')
-            return bin(to_int)[2:].rjust(len(msg)*8,'0')
+        if self.message:
+            to_int = int.from_bytes(self.message, 'big')
+            self.message = bin(to_int)[2:].rjust(len(self.message)*8,'0')
         else:
-            return ''
-    # initializing constants:
-    if h_vals:
-        h0, h1, h2, h3, h4 = h_vals
-    else:
-        h0 = 0x67452301
-        h1 = 0xEFCDAB89
-        h2 = 0x98BADCFE
-        h3 = 0x10325476
-        h4 = 0xC3D2E1F0
-    ml = bin(len(message) * 8)[2:].rjust(64, '0')
-    wrap_32 = 2**32
-    if type(message) is str:
-        message = message.encode()
+            self.message = ''
+            
+    def hexdigest(self):
+        return hex(self.H)[2:]
 
-    ## pre-processing:
-    bin_msg = _bytes_to_binary(message)
-    klen = 448 - ((len(message)*8)+1)%512
-    # padding can be provided for length extension attacks
-    # forged padding of key + og_str + padding_bytes + new_str
-    if not padding:
-        padding = '1' + '0'*klen + ml
-    bin_msg = bin_msg + padding
     ## process message in 512-bit chunks
-    chunks_512 = _break_chunks(bin_msg, 512)
-    for chunk in chunks_512:
-        w = [0]*80
-        w[0:16] = _break_chunks(chunk, 32)
-        for i in range(16,80):
-            w[i] = _left_rotate((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1) % wrap_32
-        # Initialize hash value for this chunk: 
-        a = h0 
-        b = h1 
-        c = h2 
-        d = h3 
-        e = h4 
-        # main loop
-        for i in range(80):
-            if 0 <= i <= 19:
-                f = (b & c) | ((~b) & d)
-                k = 0x5A827999
-            elif 20 <= i <= 39:
-                f = b ^ c ^ d
-                k = 0x6ED9EBA1
-            elif 40 <= i <= 59:
-                f = (b & c) | (b & d) | (c & d)
-                k = 0x8F1BBCDC
-            elif 60 <= i <= 79:
-                f = b ^ c ^ d
-                k = 0xCA62C1D6
-            temp = (_left_rotate(a,5) + f + e + k + w[i]) % wrap_32
-            e = d 
-            d = c 
-            c = _left_rotate(b, 30) % wrap_32
-            b = a 
-            a = temp 
-        h0 = (h0 + a) % wrap_32
-        h1 = (h1 + b) % wrap_32
-        h2 = (h2 + c) % wrap_32
-        h3 = (h3 + d) % wrap_32
-        h4 = (h4 + e) % wrap_32
-    # digests the final hash value (big-endian) as a 160-bit number:
-    hh = h0<<128 | h1<<96 | h2<<64 | h3<<32 | h4
-    return hex(hh)[2:]
+    def _process(self):
+        chunks_512 = self._break_chunks(self.message, 512)
+        for chunk in chunks_512:
+            w = [0]*80
+            w[0:16] = self._break_chunks(chunk, 32)
+            for i in range(16,80):
+                w[i] = self._left_rotate((w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16]), 1) % self.wrap_32
+            # Initialize hash value for this chunk: 
+            a, b, c, d, e = self.h
+            # main loop
+            for i in range(80):
+                if 0 <= i <= 19:
+                    f = (b & c) | ((~b) & d)
+                    k = 0x5A827999
+                elif 20 <= i <= 39:
+                    f = b ^ c ^ d
+                    k = 0x6ED9EBA1
+                elif 40 <= i <= 59:
+                    f = (b & c) | (b & d) | (c & d)
+                    k = 0x8F1BBCDC
+                elif 60 <= i <= 79:
+                    f = b ^ c ^ d
+                    k = 0xCA62C1D6
+                temp = (self._left_rotate(a,5) + f + e + k + w[i]) % self.wrap_32
+                e = d 
+                d = c 
+                c = self._left_rotate(b, 30) % self.wrap_32
+                b = a 
+                a = temp 
+            self.h[0] = (self.h[0] + a) % self.wrap_32
+            self.h[1] = (self.h[1] + b) % self.wrap_32
+            self.h[2] = (self.h[2] + c) % self.wrap_32
+            self.h[3] = (self.h[3] + d) % self.wrap_32
+            self.h[4] = (self.h[4] + e) % self.wrap_32
+        # digests the final hash value (big-endian) as a 160-bit number:
+        self.H = self.h[0]<<128 | self.h[1]<<96 | self.h[2]<<64 | self.h[3]<<32 | self.h[4]
+        
 
 # MD4 implementation from
 # https://github.com/kangtastic/
