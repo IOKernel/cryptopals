@@ -42,7 +42,6 @@ def aes_ecb_decrypt(ciphertext: bytes, key: bytes) -> bytes:
 
 def aes_cbc_encrypt(plaintext: bytes, key: bytes, iv: bytes) -> bytes:
     # Check Intro to Cryptography Chapter 5 for equations
-    BLOCKSIZE = 16
     ciphertext = []
     pt_blocks = get_blocks(plaintext)
     ct_previous = iv
@@ -56,7 +55,6 @@ def aes_cbc_encrypt(plaintext: bytes, key: bytes, iv: bytes) -> bytes:
 def aes_cbc_decrypt(ciphertext: bytes, key: bytes, iv: bytes) -> bytes:
     # Check Intro to Cryptography Chapter 5 for equations
     #! DOES NOT DECRYPT LAST BLOCK WELL, FIX LATER
-    BLOCKSIZE = 16
     plaintext = []
     ct_blocks = get_blocks(ciphertext)
     ct_blocks.insert(0, iv)
