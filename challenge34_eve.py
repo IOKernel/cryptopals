@@ -3,14 +3,10 @@
 import threading
 import socket
 
-
-
 # Connection Data
 host = '127.0.0.1'
 port = 10000
 clientnames = 'ABCDEF'
-
-
 
 def relay(message, clientA):
     if type(message) is str:

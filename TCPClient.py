@@ -13,13 +13,14 @@ class Client():
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = HOST
         self.port = PORT
-        self._private_key = 0
-        self.public_key = 0
-        self.shared_key = b""
-        self.other = ""
+        # initializing needed parameters
+        self._private_key = 0 # private key a|b
+        self.public_key = 0 # public key A|B
+        self.shared_key = b"" # share key from sha1(s)
+        self.other = "" # other user's nickname
 
         # connect to the server
-        self.connect()
+        self._connect()
 
         # Starting Threads For Listening And Writing
         receive_thread = threading.Thread(target=self.receive)
@@ -29,6 +30,7 @@ class Client():
         write_thread.start()    
             
     def initiate_dh(self, p, g, a):
+        # setting DH parameters from user and sending them
         self.p = p
         self.g = g
         self._private_key = power_mod(a, 1, p)
@@ -37,7 +39,8 @@ class Client():
         print("\U00002705 Sending DH parameters...")
         self.sock.sendall(init_str)
 
-    def connect(self):
+    def _connect(self):
+        # initiate server connection
         try:
             self.sock.connect((self.host, self.port))
             print(f"Connected to {self.host}:{self.port}")
@@ -48,24 +51,20 @@ class Client():
     def write(self):
         while True:
             message = input('')
-            if self.shared_key:
+            try:
+                if self.shared_key:
                 # dh exchange is over, encrypt messages
-                try:
                     iv = urandom(16)
                     padded = pkcs7_pad(message)
                     encrypted_msg = aes_cbc_encrypt(padded, self.shared_key, iv)
                     self.sock.sendall(encrypted_msg + iv)
 
-                except KeyboardInterrupt:
-                    print('closing connection.')
-                    exit()
-            else:
-                try:
-                    self.sock.send(message.encode())  
+                else:
+                    self.sock.send(message.encode())
 
-                except KeyboardInterrupt:
-                    print('closing connection.')
-                    exit()
+            except KeyboardInterrupt:
+                print('closing connection.')
+                exit()
 
     # Listening to Server and Sending Nickname
     def receive(self):
@@ -86,6 +85,7 @@ class Client():
                 print("\U00002705 Connection is now encrypted.")
                 self.sock.sendall(f"B = {str(self.public_key)}".encode())
 
+            # receive other's public key
             elif message[:3] == b"B =":
                 print("\U00002705 Received public key!")
                 B = int(message.split()[2])
@@ -93,18 +93,21 @@ class Client():
                 self.shared_key = sha1(str(s).encode()).bytes()[0:16]
                 print("\U00002705 Connection is now encrypted.")
 
+            # print join statement and get other's Nicknname
             elif message[2:6] == b"join":
                 if not self.other:
                     self.other = message.decode()[0]
                 print(message.decode())
 
+            # if connection closes
             elif message == b'':
                 print("connection lost!")
                 self.sock.close()
                 break
 
+            # After key exchange is done, messages are encrypted using the shared key
+            # decrypt the message using the iv appended to the text and shared key
             else:
-                
                 iv = message[-16:]
                 pt_padded = aes_cbc_decrypt(message[:-16], self.shared_key, iv)
                 pt = pkcs7_unpad(pt_padded)
