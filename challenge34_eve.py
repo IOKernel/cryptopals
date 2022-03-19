@@ -30,7 +30,7 @@ def handle(client):
                 break
             index = clients.index(client)
             nickname = nicknames[index]
-            print(f'{nickname}: {message.decode()}')
+            print(f'{nickname} -> {nicknames[(index+1)%2]}: {message}')
             relay(message, client)
         except:
             shutoff(client)
@@ -61,7 +61,6 @@ def receive():
         # Print And Broadcast Nickname
         print(f"Nickname is {nickname}")
         relay(f"{nickname} joined!".encode(), nickname)
-        client.sendall('Connected to server!'.encode())
 
         # Start Handling Thread For Client
         thread = threading.Thread(target=handle, args=(client,))
