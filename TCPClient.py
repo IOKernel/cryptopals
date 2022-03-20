@@ -44,6 +44,7 @@ class Client():
         try:
             self.sock.connect((self.host, self.port))
             print(f"Connected to {self.host}:{self.port}")
+            
         except:
             print('server is off')
             
@@ -96,7 +97,10 @@ class Client():
             # print join statement and get other's Nicknname
             elif message[2:6] == b"join":
                 if not self.other:
-                    self.other = message.decode()[0]
+                    if message.decode()[0] == 'A':
+                        self.other = 'B'
+                    elif message.decode()[0] == 'B':
+                        self.other = 'A'
                 print(message.decode())
 
             # if connection closes
