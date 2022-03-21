@@ -108,7 +108,6 @@ class Client():
                 A = int(message.split()[2])
                 s = power_mod(A, self._private_key, self.p)
                 self.shared_key = sha1(str(s).encode()).bytes()[0:16]
-                print(f"{self.shared_key = }")
                 print("\U00002705 Connection is now encrypted.")
                 self.sock.sendall(f"B = {str(self.public_key)}".encode())
 
