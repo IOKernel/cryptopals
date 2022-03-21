@@ -58,7 +58,7 @@ class Client():
                     iv = urandom(16)
                     padded = pkcs7_pad(message)
                     encrypted_msg = aes_cbc_encrypt(padded, self.shared_key, iv)
-                    self.sock.sendall(encrypted_msg + iv)
+                    self.sock.send(encrypted_msg + iv)
 
                 else:
                     self.sock.send(message.encode())
@@ -86,6 +86,15 @@ class Client():
                 print("\U00002705 Connection is now encrypted.")
                 self.sock.sendall(f"B = {str(self.public_key)}".encode())
 
+            elif message[:8] == b"[p, g] =":
+                print("\U00002705 Received DH parameters, sending ACK...")
+                msg = message.decode()
+                self.p, self.g = [int(n.strip(',')) for n in msg.split()[3:]]
+                b = Random(int(time())).random()
+                self._private_key = power_mod(b, 1, self.p)
+                self.public_key = power_mod(self.g, self._private_key, self.p)
+                self.sock.send(b"ACK")
+
             # receive other's public key
             elif message[:3] == b"B =":
                 print("\U00002705 Received public key!")
@@ -93,6 +102,15 @@ class Client():
                 s = power_mod(B, self._private_key, self.p)
                 self.shared_key = sha1(str(s).encode()).bytes()[0:16]
                 print("\U00002705 Connection is now encrypted.")
+
+            elif message[:3] == b"A =":
+                print("\U00002705 Received public key!")
+                A = int(message.split()[2])
+                s = power_mod(A, self._private_key, self.p)
+                self.shared_key = sha1(str(s).encode()).bytes()[0:16]
+                print(f"{self.shared_key = }")
+                print("\U00002705 Connection is now encrypted.")
+                self.sock.sendall(f"B = {str(self.public_key)}".encode())
 
             # print join statement and get other's Nicknname
             elif message[2:6] == b"join":
@@ -103,6 +121,11 @@ class Client():
                         self.other = 'A'
                 print(message.decode())
 
+
+            elif message[0:3] == b"ACK":
+                print("\U00002705 Received ACK, sending A...")
+                self.sock.sendall(f"A = {str(self.public_key)}".encode())
+                
             # if connection closes
             elif message == b'':
                 print("connection lost!")
@@ -112,6 +135,7 @@ class Client():
             # After key exchange is done, messages are encrypted using the shared key
             # decrypt the message using the iv appended to the text and shared key
             else:
+                print(f"{self.shared_key = }")
                 iv = message[-16:]
                 pt_padded = aes_cbc_decrypt(message[:-16], self.shared_key, iv)
                 pt = pkcs7_unpad(pt_padded)
