@@ -136,7 +136,7 @@ def get_key(c_xored_lists: list) -> str:
 # opening the file and reading the ciphertext
 def main():
     dirname = os.path.dirname(__file__)
-    path = os.path.join(dirname, 'challenge6-text.txt')
+    path = os.path.join(dirname, 'challenge06-text.txt')
     with open(path, 'rb') as f:
         ciphertext = f.read()
     # base64 decode
