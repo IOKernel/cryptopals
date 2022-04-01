@@ -49,6 +49,12 @@ def get_blocks(data: bytes, bs: int = 16) -> list:
     return [data[i:i+bs] for i in range(0, len(data), bs)]
 
 def block_bit_flip(block: bytes, guess: int, flip_pos: int, new_byte: int) -> bytes:
+    """
+        block: block of bytes
+        guess: guessed byte of the plaintext -> ct[i] = guess[i] ^ key[i] 
+        flip_pos: position of the byte in the block
+        new_byte: new byte to be replaced with
+    """
     flipped_byte = bytes([block[flip_pos] ^ guess ^ new_byte])
     return block[:flip_pos] + flipped_byte + block[flip_pos+1:]
 
@@ -83,6 +89,7 @@ def power_mod(b, e, m):
 
 class Random():
     def __init__(self, input_seed = 0, MT = False):
+        # can supply the state and seed
         # initializing values
         self.w, self.n, self.m, self.r = 32, 624, 397, 31
         self.a = 0x9908B0DF
