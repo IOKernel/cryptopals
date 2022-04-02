@@ -94,6 +94,10 @@ def aes_ctr_encrypt(plaintext: bytes, key: bytes, nonce: bytes) -> bytes:
     return b''.join(ciphertext)
 
 def aes_ctr_decrypt(ciphertext: bytes, key: bytes, nonce: bytes) -> bytes:
+    """
+        Reimplement it allowing input deciding the counter value to allow
+        editing of a specific block of cipher
+    """
     cipher_blocks = get_blocks(ciphertext)
     keystream_length = len(cipher_blocks)
     keystream = get_keystream(key, nonce, keystream_length)
