@@ -7,7 +7,10 @@ from Crypto.Hash import SHA256, HMAC
 from aes import aes_cbc_decrypt, aes_cbc_encrypt
 from padding import pkcs7_pad, pkcs7_unpad
 from os import urandom
-
+'''
+    sending A = 0 or A = N forces  S  on the server side to be equal to 0.
+    So by setting S = 0 on the client side as well, we bypass password authentication
+'''
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
 # --------------------------------------------------------
@@ -20,7 +23,7 @@ class Client():
         self.port = PORT
         self.other = "S" # other user's nickname
         self.email = "test@test.com"
-        self.password = "pass123"
+        self.password = "secretpasswodrd"
 
         # connect to the server
         self._connect()
@@ -50,8 +53,15 @@ class Client():
             # sending A the public key in DH
             self.a = Random(int(time())).random()
             self._private_key = power_mod(self.a, 1, self.N)
-            self.A = power_mod(self.g, self._private_key, self.N)
+
+            #self.A = power_mod(self.g, self._private_key, self.N)
+
+            # sending A = 0, must change S = 0 on client side as well
+            self.A = 0
+            # sending A = N
+            self.A = self.N
             self.sock.send(str(self.A).encode())
+            
 
             # receive salt, B
             message = self.sock.recv(1024)
@@ -74,7 +84,10 @@ class Client():
             # generate S
             var_1 = self.B - self.k*power_mod(self.g, self.x, self.N)
             var_2 = self._private_key + self.u*self.x
-            self.S = power_mod(var_1, var_2, self.N)
+            if self.A == 0 or self.A == self.N:
+                self.S = 0
+            else:
+                self.S = power_mod(var_1, var_2, self.N)
 
             # generate K
             hash_256 = SHA256.new()

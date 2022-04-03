@@ -32,7 +32,7 @@ def gen_srp_vals(email, password):
 
     # hash salt + password
     hash_256 = SHA256.new()
-    hash_256.update((str(salt)+password).encode())
+    hash_256.update((str(salt)+P).encode())
     xH = hash_256.hexdigest()
 
     # convert to int
@@ -59,7 +59,9 @@ def get_creds(client):
 def handle(client):
     # initialization with client
     email, password = get_creds(client)
-
+    # simulate preset user password, code will work only if client uses
+    # the same password
+    password = "secretpassword"
     # get secure remote password parameters and send them to client
     N, g, k, salt, v = gen_srp_vals(email, password)
     client.send(f"{str(N)},{str(g)},{str(k)}".encode())
@@ -82,6 +84,7 @@ def handle(client):
 
     # generate S | S = (A * v**u) ** b % N
     S = power_mod(A*power_mod(v,u,N),b,N)
+    print(S)
 
     # generate K | K = sha256(S)
     hash_256 = SHA256.new()
@@ -98,9 +101,10 @@ def handle(client):
     client_hmac = client.recv(1024).decode()
     if client_hmac != hmac_digest:
         print("INVALID HMAC, ABORTING")
+        client.send(b"INVALID HMAC/PASSWORD")
         client.close()
-
-    print("VALIDATED.. Starting secure messaging")
+    else:
+        print("VALIDATED.. Starting secure messaging")
     
     while True:
         try:
