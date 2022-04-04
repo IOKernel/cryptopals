@@ -1,4 +1,5 @@
 # might be better to move into mathutils.py
+from Crypto.Util.number import getPrime
 def egcd(a,b):
     # more info on the algorithm found below
     # https://www.csee.umbc.edu/~chang/cs203.s09/exteuclid.shtml
@@ -21,14 +22,14 @@ def modinv(a,b):
     raise ValueError(f"gcd(a,b) != 1")
 
 class Rsa():
-    def __init__(self, primeSize = 512):
+    def __init__(self, primeSize = 512, e = 3):
         self.p = getPrime(primeSize)
         self.q = getPrime(primeSize)
         while self.p == self.q:
             self.q = getPrime(primeSize)
         self.n = self.p * self.q
         # currently the code fails if invmod(3,totient) doesnt exist
-        self.e = 3
+        self.e = e
         self._keygen()
 
     def _keygen(self):
@@ -36,7 +37,13 @@ class Rsa():
         self.d = modinv(self.e, et)
         self.publickey = [self.e, self.n]
         self.privatekey = [self.d, self.n]
-    
+
+    def getPubKey(self):
+        return self.publickey
+
+    def getPrivKey(self):
+        return self.privatekey
+        
     def encrypt(self, m: int) -> int:
         if type(m) is str:
             m = m.encode()
@@ -49,4 +56,3 @@ class Rsa():
     
     def decrypt2bytes(self, c: int) -> bytes:
         return bytes.fromhex(hex(self.decrypt(c))[2:])
-
