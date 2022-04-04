@@ -23,13 +23,18 @@ def modinv(a,b):
 
 class Rsa():
     def __init__(self, primeSize = 512, e = 3):
+        self.e = e
+
         self.p = getPrime(primeSize)
+        while self.p % self.e == 1:
+            self.p = getPrime(primeSize)
+
         self.q = getPrime(primeSize)
-        while self.p == self.q:
+        while (self.p == self.q) or (self.q % self.e == 1):
             self.q = getPrime(primeSize)
+
         self.n = self.p * self.q
         # currently the code fails if invmod(3,totient) doesnt exist
-        self.e = e
         self._keygen()
 
     def _keygen(self):
@@ -45,11 +50,12 @@ class Rsa():
         return self.privatekey
         
     def encrypt(self, m: int) -> int:
+        # returns ct + public key (e, n)
         if type(m) is str:
             m = m.encode()
         if type(m) is bytes:
             m = int(m.hex(),16)
-        return pow(m, self.e, self.n) 
+        return pow(m, self.e, self.n), self.publickey
 
     def decrypt(self, c: int) -> int:
         return pow(c,self.d,self.n)
