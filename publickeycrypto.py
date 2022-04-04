@@ -1,12 +1,4 @@
-#!/usr/bin/env python3
-from Crypto.Util.number import getPrime
-# --------------------------------------------------------
-# ---------------------- functions -----------------------
-# --------------------------------------------------------
-def invmod(a,b):
-    # also a possible way to find the inverse since python 3.8
-    return pow(a, -1, b)
-
+# might be better to move into mathutils.py
 def egcd(a,b):
     # more info on the algorithm found below
     # https://www.csee.umbc.edu/~chang/cs203.s09/exteuclid.shtml
@@ -57,16 +49,4 @@ class Rsa():
     
     def decrypt2bytes(self, c: int) -> bytes:
         return bytes.fromhex(hex(self.decrypt(c))[2:])
-# --------------------------------------------------------
-# ------------------------- main -------------------------
-# --------------------------------------------------------
 
-def main():
-    rsa = Rsa(512)
-    ct = rsa.encrypt('test')
-    print(f"ct: {ct}")
-    pt = rsa.decrypt2bytes(ct)
-    print(f"pt: {pt}")
-
-if __name__ == "__main__":
-    main()
