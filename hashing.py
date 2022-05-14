@@ -3,7 +3,8 @@ class sha1():
     def __init__(self, msg: bytes, h_vals: list = [], padding = ''):
         if type(msg) is str:
             self.message = msg.encode()
-        self.message = msg
+        else:
+            self.message = msg
         self.h = h_vals.copy()
         self.padding = padding
         if not self.h:
