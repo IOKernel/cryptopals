@@ -154,7 +154,7 @@ def main():
     # get the plaintext using the rolling_xor func from challenge 5
     plaintext = xor(ciphertext, xor_key.encode()).decode()
     # save it to a file since it's a large wall of text
-    savepath = os.path.join(dirname, 'key6.txt')
+    savepath = os.path.join(dirname, 'challenge06-key.txt')
     with open(savepath, 'w') as f:
         f.write(plaintext)
 
