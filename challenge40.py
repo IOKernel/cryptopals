@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#E=3 RSA Broadcast attack
+# E=3 RSA Broadcast attack
 from publickeycrypto import Rsa, egcd
 import gmpy2
 # precision set to get all of the pt correctly (otherwise only partial pt)
