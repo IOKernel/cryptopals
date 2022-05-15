@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Implement a SHA-1 keyed MAC
 from utils import ans_check
 import hashing
 # --------------------------------------------------------

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Byte-at-a-time ECB decryption (Simple)
 from utils import read
 from aes import detect_ecb, aes_ecb_encrypt, random_bytes_gen
 from padding import pkcs7_pad

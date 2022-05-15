@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Break "random access read/write" AES CTR
 from utils import read
 from aes import (
     random_bytes_gen,

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# AES in ECB mode
 from base64 import b64decode
 import os
 from Crypto.Cipher import AES

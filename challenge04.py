@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Detect single-character XOR 
 from string import ascii_letters
 import os
 from utils import xor

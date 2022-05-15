@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Implement PKCS#7 padding
 from utils import ans_check
 from padding import pkcs7_pad, pkcs7_unpad
 BLOCKSIZE = 16

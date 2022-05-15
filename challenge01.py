@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Convert hex to base64 
 import string
 from base64 import b64encode
 from utils import ans_check

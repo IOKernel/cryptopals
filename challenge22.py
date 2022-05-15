@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Crack an MT19937 seed
 import time
 from utils import ans_check, Random
 # --------------------------------------------------------

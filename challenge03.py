@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Single-byte XOR cipher 
 from string import ascii_letters
 from utils import xor
  

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Implement DH with negotiated groups
+# and break with malicious "g" parameters
+
 # server/client modified from https://www.neuralnine.com/tcp-chat-in-python/
 '''
     to run, start the eve server first, then bob then alice.

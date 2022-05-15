@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Break fixed-nonce CTR mode using substitutions
 from base64 import b64decode, b64encode
 from aes import (
     BLOCKSIZE, 

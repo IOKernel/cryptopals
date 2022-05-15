@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Implement a MITM key-fixing attack 
+# on Diffie-Hellman with parameter injection
+
 # server/client modified from https://www.neuralnine.com/tcp-chat-in-python/
 '''
     to run, start the eve server first, then alice then bob.

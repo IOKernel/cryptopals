@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Implement CTR, the stream cipher mode
 from base64 import b64decode, b64encode
 from aes import BLOCKSIZE, aes_ecb_encrypt
 from padding import pkcs7_pad

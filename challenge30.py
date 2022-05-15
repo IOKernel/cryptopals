@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Break an MD4 keyed MAC using length extension
 from hashing import MD4
 from utils import bitstring_to_bytes, ans_check
 import struct

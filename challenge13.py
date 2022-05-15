@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ECB cut-and-paste
 from utils import ans_check
 from aes import (
     aes_ecb_encrypt, 

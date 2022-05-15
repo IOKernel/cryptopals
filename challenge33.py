@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Implement Diffie-Hellman
+
 from utils import Random, ans_check, power_mod
 from hashing import sha1
 # --------------------------------------------------------

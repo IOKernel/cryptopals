@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Implement CBC mode
 from base64 import b64decode, b64encode
 from utils import xor, read
 from aes import aes_ecb_encrypt, aes_ecb_encrypt, aes_cbc_decrypt

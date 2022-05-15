@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+# PKCS#7 padding validation
 from utils import ans_check
 from padding import pkcs7_unpad
-#  Set 2 Challenge 15  - PKCS#7 padding validation
 
 # --------------------------------------------------------
 # ---------------------- functions -----------------------

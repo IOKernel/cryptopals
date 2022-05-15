@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Detect AES in ECB mode
 import os
 from utils import read
 # --------------------------------------------------------

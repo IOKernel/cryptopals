@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# CBC bitflipping attacks
 from utils import get_blocks, ans_check
 from padding import pkcs7_pad
 from aes import (

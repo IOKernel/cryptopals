@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Recover the key from CBC with IV=Key
 from utils import get_blocks, ans_check, xor
 from padding import pkcs7_pad
 from aes import (

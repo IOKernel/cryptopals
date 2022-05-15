@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Break HMAC-SHA1 with a slightly less artificial timing leak
 import requests
 import time
 hexdigits = '0123456789abcdef'

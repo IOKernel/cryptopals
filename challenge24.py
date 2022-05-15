@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Create the MT19937 stream cipher and break it
 from utils import Random, xor, ans_check
 from os import urandom
 from random import randint

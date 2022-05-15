@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# CTR bitflipping
 from utils import get_blocks, ans_check
 from aes import (
     random_bytes_gen, 

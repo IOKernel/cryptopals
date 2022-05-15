@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 # BREAKING AES-ECB-128 oracle with randomly appended bytes in the start to extract a 
 # secret from provided ciphertexts
 from utils import read,  get_blocks

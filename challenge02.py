@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Fixed XOR 
 from utils import ans_check
 
 # --------------------------------------------------------

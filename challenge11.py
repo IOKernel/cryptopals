@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# An ECB/CBC detection oracle
 from random import randint
 from os import urandom
 from utils import read

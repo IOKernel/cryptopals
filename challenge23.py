@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Clone an MT19937 RNG from its output
 from utils import ans_check, Random
 
 # --------------------------------------------------------

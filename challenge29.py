@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Break a SHA-1 keyed MAC using length extension
 from hashing import sha1
 from utils import ans_check
 # --------------------------------------------------------
