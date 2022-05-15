@@ -21,6 +21,9 @@ def modinv(a,b):
         return s
     raise ValueError(f"gcd(a,b) != 1")
 
+def int2bytes(m: int) -> bytes:
+    return bytes.fromhex(hex(m)[2:])
+
 class Rsa():
     def __init__(self, primeSize = 512, e = 3):
         self.e = e
