@@ -18,7 +18,7 @@
 # ----------------------- imports ------------------------
 # --------------------------------------------------------
 from hashing import sha1
-from publickeycrypto import modinv
+from publickeycrypto import int2bytes, modinv
 from os import urandom
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
@@ -48,7 +48,7 @@ def bruteforce_recover_priv_key_DSA(k_bitsize:int, r:int, s:int, md:int, pub_key
         except:
             continue
         if r_gen == r and s_gen == s:
-            print(f"Recovered private key: {x}")
+            #print(f"Recovered private key: {x}")
             print(f"k: {k}")
             return x
     # another solution method:
@@ -147,11 +147,14 @@ def main():
     # ------------ CHALLENGE VARIABLES ------------
     print("----- CHALLENGE SOLUTION -----")
     # brute force to recover key
-    md = int("0954edd5e0afe5542a4adf012611a91912a3ec16", 16)
+    priv_key_hash = "0954edd5e0afe5542a4adf012611a91912a3ec16"
     r = 548099063082341131477253921760299949438196259240
     s = 857042759984254168557880549501802188789837994940
     y = int("84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17", 16)
-    bruteforce_recover_priv_key_DSA(k_bitsize=16, r=r, s=s, md=md, pub_key=y)
+    priv_key_re = bruteforce_recover_priv_key_DSA(k_bitsize=16, r=r, s=s, md=md, pub_key=y)
+    priv_key_re = sha1(hex(priv_key_re)[2:]).hexdigest()
+    print("Recovered private key (hex):", priv_key_re)
+    print("Recovered private key matches original key:", priv_key_re == priv_key_hash)
     
 if __name__ == "__main__":
     main()
