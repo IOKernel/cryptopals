@@ -21,8 +21,8 @@ def modinv(a,b):
         return s
     raise ValueError(f"gcd(a,b) != 1")
 
-def int2bytes(m: int) -> bytes:
-    return bytes.fromhex(hex(m)[2:])
+def int2bytes(m: int, byteorder = 'big') -> bytes:
+    return m.to_bytes(length=(max(m.bit_length(), 1) + 7) // 8, byteorder=byteorder)
 
 class Rsa():
     def __init__(self, primeSize = 512, e = 3):
