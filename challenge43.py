@@ -48,7 +48,7 @@ def bruteforce_recover_priv_key_DSA(k_bitsize:int, r:int, s:int, md:int, pub_key
         except:
             continue
         if r_gen == r and s_gen == s:
-            print(f"Found private key: {x}")
+            print(f"Recovered private key: {x}")
             print(f"k: {k}")
             return x
     # another solution method:
@@ -151,8 +151,7 @@ def main():
     r = 548099063082341131477253921760299949438196259240
     s = 857042759984254168557880549501802188789837994940
     y = int("84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17", 16)
-    recovered_priv_key = bruteforce_recover_priv_key_DSA(k_bitsize=16, r=r, s=s, md=md, pub_key=y)
-    print("Recovered private key:", recovered_priv_key)
+    bruteforce_recover_priv_key_DSA(k_bitsize=16, r=r, s=s, md=md, pub_key=y)
     
 if __name__ == "__main__":
     main()
