@@ -50,7 +50,7 @@ class sha1():
             self.message = ''
             
     def hexdigest(self):
-        return hex(self.H)[2:]
+        return hex(self.H)[2:].rjust(40, '0')
 
     def bytes(self):
         # could use bitstring_to_bytes from chal28
