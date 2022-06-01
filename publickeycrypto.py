@@ -92,11 +92,11 @@ class Dsa:
             output: (x, y) = public key
         """
         # returns (x, y)
-        x = int(urandom(16).hex(), 16) % (self.q - 1)
+        self.x = int(urandom(16).hex(), 16) % (self.q - 1)
         # assert that x is in range [1, q-1]
-        assert 1 < x < self.q
-        y = pow(self.g, x, self.p) 
-        return (x, y)
+        assert 1 < self.x < self.q
+        self.y = pow(self.g, self.x, self.p) 
+        return (self.x, self.y)
 
     def sign(self, m: str):
         """
@@ -112,15 +112,15 @@ class Dsa:
 
         k = int(urandom(16).hex(), 16) % (self.q - 1)
         # assert that k is in range [1, q-1]
-        assert 1 < k < self.q
+        #!assert 1 < k < self.q
 
         r = pow(self.g, k, self.p) % self.q
         # assert that r is in range [1, q-1]
-        assert 1 < r < self.q
+        #!assert 1 < r < self.q
 
         s = (modinv(k, self.q) * (md + self.x * r)) % self.q
         # assert that s is in range [1, q-1]
-        assert 1 < s < self.q
+        #!assert 1 < s < self.q
 
         return (r, s)
 
