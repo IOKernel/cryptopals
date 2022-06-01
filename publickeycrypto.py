@@ -2,7 +2,7 @@
 from Crypto.Util.number import getPrime
 from hashing import sha1
 from os import urandom
-def egcd(a,b):
+def egcd(a: int,b: int) -> tuple:
     # more info on the algorithm found below
     # https://www.csee.umbc.edu/~chang/cs203.s09/exteuclid.shtml
     # d is the gcd, should be 1 for co-primes
@@ -15,7 +15,7 @@ def egcd(a,b):
     t = s1 - (a//b)*t1
     return (d,s,t)
 
-def modinv(a,b):
+def modinv(a: int, b: int) -> int:
     d, s, t = egcd(a, b)
     if d == 1:
         while s < 0:
@@ -26,7 +26,7 @@ def modinv(a,b):
 def int2bytes(m: int, byteorder = 'big') -> bytes:
     return m.to_bytes(length=(max(m.bit_length(), 1) + 7) // 8, byteorder=byteorder)
 
-def DSA_recover_x_from_k(k:int, r:int, s:int, md:int):
+def DSA_recover_x_from_k(k:int, r:int, s:int, md:int) -> int:
     """
     Recover private key (x) from signature (r, s) and message digest (md)
     returns recovered private key
@@ -54,16 +54,27 @@ class Rsa():
     def _keygen(self):
         et = (self.p-1) * (self.q-1)
         self.d = modinv(self.e, et)
-        self.publickey = [self.e, self.n]
-        self.privatekey = [self.d, self.n]
+        self.publickey = (self.e, self.n)
+        self.privatekey = (self.d, self.n)
 
-    def getPubKey(self):
+    def getPubKey(self) -> tuple:
+        '''
+        Returns: public key (e, n)
+        '''
         return self.publickey
 
-    def getPrivKey(self):
+    def getPrivKey(self) -> tuple:
+        '''
+        Returns: private key (d, n)
+        '''
         return self.privatekey
         
-    def encrypt(self, m: int) -> int:
+    def encrypt(self, m: int):
+        '''
+        Encrypts a message m (int)
+        Returns: ciphertext c = m^e mod n 
+        and the public key (e,n)
+        '''
         # returns ct + public key (e, n)
         if type(m) is str:
             m = m.encode()
@@ -72,10 +83,18 @@ class Rsa():
         return pow(m, self.e, self.n), self.publickey
 
     def decrypt(self, c: int) -> int:
-        return pow(c,self.d,self.n)
+        '''
+        Decrypts a ciphertext c (int)
+        Returns: plaintext m (int) = c^d mod n
+        '''
+        return pow(c, self.d, self.n)
     
     def decrypt2bytes(self, c: int) -> bytes:
-        return bytes.fromhex(hex(self.decrypt(c))[2:])
+        '''
+        Decrypts a ciphertext c (int)
+        Returns: plaintext m (bytes) = c^d mod n
+        '''
+        return int2bytes(self.decrypt(c))
 
 class Dsa:
     def __init__(self, x:int = 0, y:int = 0):
@@ -86,7 +105,7 @@ class Dsa:
         self.x = x
         self.y = y
 
-    def generate_keypair(self):
+    def generate_keypair(self) -> tuple:
         """
             input: none
             output: (x, y) = public key
@@ -98,7 +117,7 @@ class Dsa:
         self.y = pow(self.g, self.x, self.p) 
         return (self.x, self.y)
 
-    def sign(self, m: str):
+    def sign(self, m: str) -> tuple:
         """
             input: m = message to be signed (string)
             output: (r, s) = signature
@@ -124,7 +143,7 @@ class Dsa:
 
         return (r, s)
 
-    def verify(self, md: int, r: int, s: int):
+    def verify(self, md: int, r: int, s: int) -> bool:
         """
             input:
             md = message digest (int)
