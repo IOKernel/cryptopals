@@ -36,6 +36,10 @@ def DSA_recover_x_from_k(k:int, r:int, s:int, md:int) -> int:
     return x
 
 class Rsa():
+    '''
+        Note: primeSize is the size of the primes p and q
+        the size of the modulus n is primeSize*2
+    '''
     def __init__(self, primeSize = 512, e = 3):
         self.e = e
 
