@@ -17,7 +17,7 @@ def oracle(rsa: Rsa, ct: int) -> bool:
     pt = rsa.decrypt(ct)
     return pt % 2 == 0
 
-def break_rsa(rsa: Rsa, ct: int) -> bytes:
+def break_rsa_parity_oracle(rsa: Rsa, ct: int) -> bytes:
     """
     input: rsa = Rsa object
            ct = ciphertext
@@ -54,7 +54,7 @@ def main():
     rsa = Rsa(512) # 1024-bit modulus size
     pt = b64decode("VGhhdCdzIHdoeSBJIGZvdW5kIHlvdSBkb24ndCBwbGF5IGFyb3VuZCB3aXRoIHRoZSBGdW5reSBDb2xkIE1lZGluYQ==")
     ct, _ = rsa.encrypt(pt)
-    break_rsa(rsa, ct)
+    break_rsa_parity_oracle(rsa, ct)
     
 
 if __name__ == "__main__":
