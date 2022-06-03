@@ -54,7 +54,8 @@ def main():
     rsa = Rsa(512) # 1024-bit modulus size
     pt = b64decode("VGhhdCdzIHdoeSBJIGZvdW5kIHlvdSBkb24ndCBwbGF5IGFyb3VuZCB3aXRoIHRoZSBGdW5reSBDb2xkIE1lZGluYQ==")
     ct, _ = rsa.encrypt(pt)
-    break_rsa_parity_oracle(rsa, ct)
+    pt = break_rsa_parity_oracle(rsa, ct)
+    #print(f"[*] Plaintext: {pt}")
     
 
 if __name__ == "__main__":
