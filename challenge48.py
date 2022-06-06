@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-RSA padding oracle attack:
-    This was a hard challenge, and the solution doesn't 
-    work all the time. I'm not sure why. 
-"""
+# bleichenbacher attack on RSA
 # --------------------------------------------------------
 # ----------------------- imports ------------------------
 # --------------------------------------------------------
@@ -36,7 +32,7 @@ def break_rsa_parity_oracle(rsa: Rsa, ct: int) -> bytes:
     B = 2**(n.bit_length()-16) # or n.bit_length()-16
     M = [(B*2, B*3 - 1)] # [(lb, ub)]
 
-    s = n // (3*B)
+    s = (n + 2*B) // (3*B)
     # step 2a
     s = single_s(rsa, ct, s, B)
     M = update_M(M, s, B, n)
