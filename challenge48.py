@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # bleichenbacher attack on RSA
+# works like 20% of the time...
 # --------------------------------------------------------
 # ----------------------- imports ------------------------
 # --------------------------------------------------------
@@ -18,8 +19,12 @@ def oracle(rsa: Rsa, ct: int) -> bool:
     modBits = number.size(rsa.n)
     k = number.ceil_div(modBits,8)
     pt = rsa.decrypt(ct)
-    pt = int2bytes(pt).rjust(k, b'\x00')
-    return pt[0] == 0 and pt[1] == 2
+    pt = int2bytes(pt)
+    if len(pt) < k:
+        pt = pt.rjust(k, b'\x00')
+        return pt[0] == 0 and pt[1] == 2
+    else:
+        return pt[0] == 2
 
 def break_rsa_parity_oracle(rsa: Rsa, ct: int) -> bytes:
     """
@@ -31,14 +36,18 @@ def break_rsa_parity_oracle(rsa: Rsa, ct: int) -> bytes:
 
     B = 2**(n.bit_length()-16) # or n.bit_length()-16
     M = [(B*2, B*3 - 1)] # [(lb, ub)]
+    s = n // (3*B)
 
-    s = (n + 2*B) // (3*B)
     # step 2a
     s = single_s(rsa, ct, s, B)
     M = update_M(M, s, B, n)
 
     while True:
         (a, b) = M[0]
+        print(f"[*] M: {M}")
+        for (lb, ub) in M:
+            if 3*B < lb < 2*B or 3*B < ub < 2*B:
+                exit("[*] Error")
         if a > b:
             print(f"M: {M}")
         if a == b: # step 4
@@ -63,7 +72,6 @@ def single_s(rsa: Rsa, ct: int, s: int, B: int) -> int:
 
     while True:
         if oracle(rsa, (ct * pow(s, e, n)) % n):
-            print(f"[*] s: {s}")
             return s
         s += 1
 
@@ -100,7 +108,7 @@ def update_M(M: list, s: int, B: int, n: int) -> list:
     print(f"[*] Updating M:")
     M_new = []
     for (a, b) in M:
-        r_lower = ceildiv((a * s - 3 * B + 1) , n)
+        r_lower = ((a * s - 3 * B + 1) // n)
         r_upper = ceildiv((b * s - 2 * B) , n)
 
         if r_lower == r_upper:
@@ -110,9 +118,9 @@ def update_M(M: list, s: int, B: int, n: int) -> list:
             lb = max(a, ceildiv(2 * B + r * n, s), 2*B)
             ub = min(b, (3 * B - 1 + r * n) // s, 3*B)
             # add the intersection of the current range and the new range
+            if lb > ub:
+                continue
             M_new = intersect(M_new, (lb, ub))
-
-    print(f"[*] M: {M_new}")
     return M_new
 
 def intersect(M: list, M_new: tuple) -> list:
@@ -121,9 +129,9 @@ def intersect(M: list, M_new: tuple) -> list:
         return [(lb, ub)]
     for i, (a, b) in enumerate(M):
         if lb <= a <= ub or lb <= b <= ub:
-            lb = min(a, lb)
-            ub = max(b, ub)
-            M[i] = (lb, ub)
+            nlb = min(a, lb)
+            nub = max(b, ub)
+            M[i] = (nlb, nub)
             return M
     M.append((lb, ub))
     return M
@@ -135,11 +143,12 @@ def ceildiv(a: int, b: int) -> int:
 # --------------------------------------------------------
 
 def main():
-    rsa = Rsa(1024) # 2048 bit modulus size
+    rsa = Rsa(384) # 2048 bit modulus size
     e, n = rsa.getPubKey()
 
-    pt = b"this is a longer message test. But it's not a problem. It's just a test."
+    pt = b"this is a longer message"
     pt = PKCS1_v1_5_pad(pt, n, MODE=2)
+    print(f"[*] Plaintext (original): {int.from_bytes(pt, 'big')}")
     ct, _ = rsa.encrypt(pt)
     pt_new = b'\x00' + break_rsa_parity_oracle(rsa, ct)
 
