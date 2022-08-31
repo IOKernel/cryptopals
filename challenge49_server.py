@@ -21,7 +21,7 @@ def transfer(hexm: str):
         MSG = pkcs7_pad(MSG)
     if verify(MSG, IV, MAC):
         MSG = pkcs7_unpad(MSG)
-        MSG = MSG.decode()
+        MSG = MSG.decode('utf-8')
         from_user = re.search('from=#(\w+)', MSG).group(1)
         # transactions are in the form of to:amount;to:amount*
         transactions = re.search('tx_list=#(.+)', MSG).group(1)
