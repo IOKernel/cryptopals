@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # Byte-at-a-time ECB decryption (Simple)
+from os import urandom
 from utils import read
-from aes import detect_ecb, aes_ecb_encrypt, random_bytes_gen
+from aes import detect_ecb, aes_ecb_encrypt, BLOCKSIZE
 from padding import pkcs7_pad
-from random import randint
 from base64 import b64decode
 from string import printable
 import time
 
 BLOCKSIZE = 16
-KEY = random_bytes_gen(BLOCKSIZE)
+KEY = urandom(BLOCKSIZE)
 
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
@@ -38,13 +38,13 @@ def ecb_check():
 
 def find_character(plaintext: bytes, initial_block: bytes, secret: bytes, block: int, blocksize: int) -> bytes:
     # for 1337 effect
-    #random_shiz = read('challenge12-text.txt')
+    random_shiz = read('challenge12-text.txt')
     for c in printable:
         ciphertext = encrypt(plaintext + secret + c.encode())
         current_block = ciphertext[block*blocksize:block*blocksize+blocksize]
-        #sct =  secret.decode().replace('\n',', ')
-        #print(f"\033[32m{sct}\033[0m{c}{random_shiz[len(secret):135]}", end='\r')
-        #time.sleep(0.01)
+        sct =  secret.decode().replace('\n',', ')
+        print(f"\033[32m{sct}\033[0m{c}{random_shiz[len(secret):135]}", end='\r')
+        time.sleep(0.001)
         if current_block == initial_block:
             return c.encode()
 
@@ -62,7 +62,7 @@ def oracle_breaking():
         try:
             secret += find_character(plaintext, initial_block, secret, block, blocksize)
         except TypeError:
-            #print(f'\N{thumbs up sign}AES-ECB Oracle Broken\N{thumbs up sign}')
+            print(f'\N{thumbs up sign}AES-ECB Oracle Broken\N{thumbs up sign}')
             print(f'Secret: {secret.decode()}')
             break
 # --------------------------------------------------------
