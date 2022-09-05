@@ -3,15 +3,14 @@
 from utils import ans_check
 from aes import (
     aes_ecb_encrypt, 
-    aes_ecb_decrypt, 
-    random_bytes_gen
+    aes_ecb_decrypt
     )
 from padding import pkcs7_pad, pkcs7_unpad
 from os import urandom
 # --------------------------------------------------------
 # ---------------------- functions -----------------------
 # --------------------------------------------------------
-key = random_bytes_gen(16)
+key = urandom(16)
 # for testing
 #key = b"\x87\xb4\x80\x9e\x80'\x10\xd2\xfe}\xd5\x99\xdf;P\xac"
 def parse_cookie(cookie: str) -> dict:
