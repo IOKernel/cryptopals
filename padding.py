@@ -6,38 +6,30 @@ def detect_padding(plaintext: bytes) -> bool:
     for i in padding:
         if i != padding_len:
             return False
-    return padding_len == len(padding)
+    return True
 
 def pkcs7_pad(plaintext: bytes, blocksize=16) -> bytes:
-    """ 
-        Input: plaintext string or bytes, block size wanted
-        Output: padded plaintext in bytes
-    """
     if type(plaintext) is str:
         plaintext = plaintext.encode()
-    # check for if pt is padded already or multiple of blocksize
-    # WILL NOT pad if plaintext is multiple of blocksize
-    if not len(plaintext)%blocksize:
-        padding_state = detect_padding(plaintext)
-        if padding_state:
-            print('ALREADY PADDED')
-            return plaintext
-    rem_bytes = blocksize - len(plaintext)%blocksize
-    padding = bytes([rem_bytes] * rem_bytes)        
+
+    padding_len = blocksize - (len(plaintext) % blocksize)
+    if padding_len == 0:
+        padding_len = blocksize
+
+    padding = bytes([padding_len] * padding_len)
     padded = plaintext + padding
     return padded
 
-def pkcs7_unpad(plaintext: bytes, blocksize: int = 16) -> bytes:
-    """ 
-        Input: plaintext padded
-        Output: unpadded plaintext
-    """    
-    if not len(plaintext)%blocksize:
-        padding_state = detect_padding(plaintext)
-        if padding_state:
-            padding_len = plaintext[-1]
-            return plaintext[:-padding_len]
-    raise ValueError('bad padding', plaintext) 
+def pkcs7_unpad(padded: bytes) -> bytes:
+    padding_len = padded[-1]
+    if padding_len <= 0 or padding_len > len(padded):
+        raise ValueError("Invalid padding length")
+
+    padding = padded[-padding_len:]
+    if all(byte == padding_len for byte in padding):
+        return padded[:-padding_len]
+    else:
+        raise ValueError("Invalid padding bytes")
 
 def PKCS1_v1_5_pad(m, n, MODE = 1):
     # pad the message with PKCS1_v1_5 padding
