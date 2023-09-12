@@ -1,0 +1,2 @@
+import os
+flag = "hitcon{this_is_a_really_long_flag_12that_is_very_hard_to_guess_for_testing}"
