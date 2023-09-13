@@ -1,2 +1,2 @@
 import os
-flag = "hitcon{this_is_a_really_long_flag_12that_is_very_hard_to_guess_for_testing}"
+flag = "hitcon{p4dd1ng_w0n7_s4v3_y0u_Fr0m_4_0rac13_617aa68c06d7ab91f57d1969e8e8532}"
